@@ -1,15 +1,25 @@
+<<<<<<< HEAD
 import React from 'react';
 import { Row, Col, Divider, Layout, Tag, Button, Skeleton, List, Card } from 'antd';
+=======
+import React, { useState } from 'react';
+import { Row, Col, Divider, Layout, Tag, Button, Skeleton } from 'antd';
+>>>>>>> Map Changes and Abosolute URL Issue Fixes and Whitelisting the website
 import { useParams } from 'react-router-dom';
 import { useArt, useExtendedArt } from './../../hooks';
 
 import { ArtContent } from '../../components/ArtContent';
+<<<<<<< HEAD
 import { shortenAddress, useConnection } from '@oyster/common';
 import { useWallet } from '@solana/wallet-adapter-react';
+=======
+import { MetaplexModal, shortenAddress, useConnection, useWallet } from '@oyster/common';
+>>>>>>> Map Changes and Abosolute URL Issue Fixes and Whitelisting the website
 import { MetaAvatar } from '../../components/MetaAvatar';
 import { sendSignMetadata } from '../../actions/sendSignMetadata';
 import { ViewOn } from './../../components/ViewOn';
 import { ArtType } from '../../types';
+import GMap from '../map';
 
 const { Content } = Layout;
 
@@ -29,6 +39,8 @@ export const ArtView = () => {
   }
   const { ref, data } = useExtendedArt(id);
 
+  const [showMapModal, setShowMapModal] = useState<boolean>(false);
+
   // const { userAccounts } = useUserAccounts();
 
   // const accountByMint = userAccounts.reduce((prev, acc) => {
@@ -36,8 +48,14 @@ export const ArtView = () => {
   //   return prev;
   // }, new Map<string, TokenAccount>());
 
+<<<<<<< HEAD
   const description = data?.description;
   const attributes = data?.attributes;
+=======
+  var descriptionData = data?.description;
+  var description = descriptionData ? descriptionData.split('~')[0] : '';
+  const locationDescription = descriptionData ? descriptionData.split('~').length > 1  ? descriptionData.split('~')[1] : "" : "";
+>>>>>>> Map Changes and Abosolute URL Issue Fixes and Whitelisting the website
 
   const pubkey = wallet.publicKey?.toBase58() || '';
 
@@ -94,6 +112,14 @@ export const ArtView = () => {
                   {((art.seller_fee_basis_points || 0) / 100).toFixed(2)}%
                 </div>
               </Col>
+              { locationDescription ? 
+              <Col span= {6}>
+                <h6>Location</h6>
+                <div className = "">
+                <button className="ant-btn tag"  onClick={() => setShowMapModal(true)}>Map</button>
+    
+                </div>
+              </Col> : '' }
               <Col span={12}>
                 <ViewOn id={id} />
               </Col>
@@ -155,6 +181,25 @@ export const ArtView = () => {
                 <div className="art-edition">{badge}</div>
               </Col>
             </Row>
+
+            <MetaplexModal
+              visible={showMapModal}
+              onCancel={() => setShowMapModal(false)}
+              title={locationDescription}
+             bodyStyle={{
+               background: 'unset',
+               boxShadow: 'unset',
+               borderRadius: 0,
+               alignItems: 'start',
+               height: '90vh',
+               width:'100%'
+              }}
+        width={1030}
+        centered
+      >
+          <GMap src={{src : locationDescription, height: '100%' , width: '100%' }}></GMap>
+      </MetaplexModal>
+      
 
             {/* <Button
                   onClick={async () => {

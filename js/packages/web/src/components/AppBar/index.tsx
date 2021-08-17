@@ -63,6 +63,11 @@ const DefaultActions = ({ vertical = false }: { vertical?: boolean }) => {
       <Link to={`/artists`}>
         <Button className="app-btn">Creators</Button>
       </Link>
+      <a href="" className="aboutus">
+        <span>
+          <Button className="app-btn" target="_blank" rel="noopener noreferrer" href="https://rnftz.carrd.co">About RNFTz</Button>
+        </span>
+      </a>
     </div>
   );
 };
