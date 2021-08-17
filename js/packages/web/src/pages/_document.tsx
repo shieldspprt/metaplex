@@ -58,9 +58,27 @@ export default class MetaplexDocument extends Document {
             dangerouslySetInnerHTML={{
               __html: `
                 (function () {
-                  tsParticles.load("tsparticles", {preset: "fire"})
-                })();
-          `,
+                  tsParticles.load("tsparticles", {
+                    particles: {
+                      shape: {
+                        type: "square",
+                      },
+                      color: {
+                        value: ["#FFFFFF", "#00FF00", "#f27d0c", "#d83aeb", "#00ffbd"]
+                      },
+                      move: {
+                        enable: !0,
+                        speed: 0.5,
+                        random: !1
+                      }
+                    },
+                    background: {
+                      image: "radial-gradient(#000, #000)"
+                    },
+                    preset: "fire",
+                  });
+                })();`
+          ,
             }}
           />
 
