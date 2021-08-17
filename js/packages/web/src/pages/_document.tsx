@@ -50,6 +50,20 @@ export default class MetaplexDocument extends Document {
           />
         </Head>
         <body>
+        <div id="tsparticles"></div>
+<script async src="https://cdn.jsdelivr.net/npm/tsparticles-preset-fire@1.18.3/tsparticles.preset.fire.bundle.min.js"
+        integrity="sha256-T1XYi2MdUYPGHHW5w5LtIliiC7qNZizIFb67kkLECok=" crossOrigin="anonymous"></script>
+<script
+            type="text/javascript"
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function () {
+                  tsParticles.load("tsparticles", {preset: "fire"})
+                })();
+          `,
+            }}
+          />
+
           <Main />
           <NextScript />
           <script
