@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Row, Col, Button, Skeleton, Carousel, List, Card } from 'antd';
 import { AuctionCard } from '../../components/AuctionCard';
@@ -34,6 +34,7 @@ import useWindowDimensions from '../../utils/layout';
 import { CheckOutlined } from '@ant-design/icons';
 import { useMemo } from 'react';
 import { ArtType } from '../../types';
+import GMap from '../map';
 
 export const AuctionItem = ({
   item,
@@ -91,12 +92,15 @@ export const AuctionView = () => {
     edition = `${art.edition} of ${art.supply}`;
   }
   const nftCount = auction?.items.flat().length;
+  const [showMapModal, setShowMapModal] = useState<boolean>(false);
   const winnerCount = auction?.items.length;
 
   const hasDescription = data === undefined || data.description === undefined;
-  const description = data?.description;
   const attributes = data?.attributes;
 
+  var descriptionData = data?.description;
+  var description = descriptionData ? descriptionData.split('~')[0] : '';
+  const locationDescription = descriptionData ? descriptionData.split('~').length > 1  ? descriptionData.split('~')[1] : "" : "";
   const items = [
     ...(auction?.items
       .flat()
@@ -199,7 +203,17 @@ export const AuctionView = () => {
                 </p>
               )}
             </Col>
-
+            
+            {
+              locationDescription ? 
+            <Col>
+              <h6>Location</h6>
+              <div style={{ display: 'flex' }}>
+                 <button className="ant-btn tag"  onClick={() => setShowMapModal(true)}>Map</button>
+              </div>
+            </Col> 
+            : ''
+            }
             <Col>
               <h6>View on</h6>
               <div style={{ display: 'flex' }}>
@@ -224,6 +238,23 @@ export const AuctionView = () => {
                 </Button>
               </div>
             </Col>
+            <MetaplexModal
+              visible={showMapModal}
+              onCancel={() => setShowMapModal(false)}
+              title="Map"
+             bodyStyle={{
+               background: 'unset',
+               boxShadow: 'unset',
+               borderRadius: 0,
+               alignItems: 'start',
+               height: '90vh',
+               width:'100%'
+              }}
+        width={1030}
+        centered
+      >
+          <GMap src={{src : locationDescription, height: '100%' , width: '100%' }}></GMap>
+      </MetaplexModal>
           </Row>
 
           {!auction && <Skeleton paragraph={{ rows: 6 }} />}

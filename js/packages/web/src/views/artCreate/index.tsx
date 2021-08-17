@@ -31,7 +31,7 @@ import {
   MetaplexModal,
   MetaplexOverlay,
   MetadataFile,
-  StringPublicKey,
+  StringPublicKey, 
 } from '@oyster/common';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { getAssetCostToStore, LAMPORT_MULTIPLIER } from '../../utils/assets';
@@ -76,7 +76,8 @@ export const ArtCreateView = () => {
       category: MetadataCategory.Image,
     },
   });
-
+  
+  const [isCustomURL, setIsCustomURL] = useState<boolean>(false);
   const gotoStep = useCallback(
     (_step: number) => {
       history.push(`/art/create/${_step.toString()}`);
@@ -171,6 +172,7 @@ export const ArtCreateView = () => {
               files={files}
               setFiles={setFiles}
               confirm={() => gotoStep(2)}
+              setIsCustomURL = {setIsCustomURL}
             />
           )}
 
@@ -180,6 +182,7 @@ export const ArtCreateView = () => {
               files={files}
               setAttributes={setAttributes}
               confirm={() => gotoStep(3)}
+              isCustomURL = {isCustomURL}
             />
           )}
           {step === 3 && (
@@ -195,6 +198,7 @@ export const ArtCreateView = () => {
               files={files}
               confirm={() => gotoStep(5)}
               connection={connection}
+              isCustomURL = {isCustomURL}
             />
           )}
           {step === 5 && (
@@ -293,6 +297,7 @@ const UploadStep = (props: {
   files: File[];
   setFiles: (files: File[]) => void;
   confirm: () => void;
+  setIsCustomURL : (isCustomURL : boolean) => void;
 }) => {
   const [coverFile, setCoverFile] = useState<File | undefined>(
     props.files?.[0],
@@ -301,8 +306,9 @@ const UploadStep = (props: {
 
   const [customURL, setCustomURL] = useState<string>('');
   const [customURLErr, setCustomURLErr] = useState<string>('');
-  const disableContinue = !coverFile || !!customURLErr;
+  const disableContinue = !(coverFile ?? true)|| !!customURLErr;
 
+  
   useEffect(() => {
     props.setAttributes({
       ...props.attributes,
@@ -444,6 +450,7 @@ const UploadStep = (props: {
               new URL(customURL);
               setCustomURL(customURL);
               setCustomURLErr('');
+              props.setIsCustomURL(customURL ? true : false);              
             } catch (e) {
               console.error(e);
               setCustomURLErr('Please enter a valid absolute URL');
@@ -464,7 +471,7 @@ const UploadStep = (props: {
                 files: [coverFile, mainFile, customURL]
                   .filter(f => f)
                   .map(f => {
-                    const uri = typeof f === 'string' ? f : f?.name || '';
+                    const uri = typeof f === 'string' ? f : (f?.name || '');
                     const type =
                       typeof f === 'string' || !f
                         ? 'unknown'
@@ -476,8 +483,8 @@ const UploadStep = (props: {
                     } as MetadataFile;
                   }),
               },
-              image: coverFile?.name || '',
-              animation_url: mainFile && mainFile.name,
+              image: coverFile?.name || (customURL ?? '')|| '',
+              animation_url: mainFile && mainFile.name
             });
             props.setFiles([coverFile, mainFile].filter(f => f) as File[]);
             props.confirm();
@@ -497,7 +504,7 @@ interface Royalty {
   amount: number;
 }
 
-const useArtworkFiles = (files: File[], attributes: IMetadataExtension) => {
+const useArtworkFiles = (files: File[], attributes: IMetadataExtension, isCustomURL : boolean) => {
   const [data, setData] = useState<{ image: string; animation_url: string }>({
     image: '',
     animation_url: '',
@@ -535,6 +542,15 @@ const useArtworkFiles = (files: File[], attributes: IMetadataExtension) => {
         if (file) reader.readAsDataURL(file);
       }
     }
+
+    if(isCustomURL) {
+      setData((data: any) => {
+        return {
+          ...(data || {}),
+          image: (attributes.image as string) || '',
+        };
+      });
+    }
   }, [files, attributes]);
 
   return data;
@@ -545,12 +561,14 @@ const InfoStep = (props: {
   files: File[];
   setAttributes: (attr: IMetadataExtension) => void;
   confirm: () => void;
+  isCustomURL : boolean;
 }) => {
   const [creators, setCreators] = useState<Array<UserValue>>([]);
   const [royalties, setRoyalties] = useState<Array<Royalty>>([]);
   const { image, animation_url } = useArtworkFiles(
     props.files,
     props.attributes,
+    props.isCustomURL
   );
   const [form] = Form.useForm();
 
@@ -998,11 +1016,13 @@ const LaunchStep = (props: {
   attributes: IMetadataExtension;
   files: File[];
   connection: Connection;
+  isCustomURL : boolean;
 }) => {
   const [cost, setCost] = useState(0);
   const { image, animation_url } = useArtworkFiles(
     props.files,
     props.attributes,
+    props.isCustomURL
   );
   const files = props.files;
   const metadata = props.attributes;
