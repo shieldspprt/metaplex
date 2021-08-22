@@ -65,7 +65,7 @@ const DefaultActions = ({ vertical = false }: { vertical?: boolean }) => {
       </Link>
       <a href="" className="aboutus">
         <span>
-          <Button className="app-btn" target="_blank" rel="noopener noreferrer" href="https://rnftz.carrd.co">About RNFTz</Button>
+          <Button className="app-btn" target="_blank" rel="noopener noreferrer" href="https://rnftz.com">About RNFTz</Button>
         </span>
       </a>
     </div>
