@@ -1,20 +1,11 @@
-<<<<<<< HEAD
-import React from 'react';
-import { Row, Col, Divider, Layout, Tag, Button, Skeleton, List, Card } from 'antd';
-=======
 import React, { useState } from 'react';
-import { Row, Col, Divider, Layout, Tag, Button, Skeleton } from 'antd';
->>>>>>> Map Changes and Abosolute URL Issue Fixes and Whitelisting the website
+import { Row, Col, Divider, Layout, Tag, Button, Skeleton, List, Card } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useArt, useExtendedArt } from './../../hooks';
 
 import { ArtContent } from '../../components/ArtContent';
-<<<<<<< HEAD
-import { shortenAddress, useConnection } from '@oyster/common';
 import { useWallet } from '@solana/wallet-adapter-react';
-=======
-import { MetaplexModal, shortenAddress, useConnection, useWallet } from '@oyster/common';
->>>>>>> Map Changes and Abosolute URL Issue Fixes and Whitelisting the website
+import { MetaplexModal, shortenAddress, useConnection } from '@oyster/common';
 import { MetaAvatar } from '../../components/MetaAvatar';
 import { sendSignMetadata } from '../../actions/sendSignMetadata';
 import { ViewOn } from './../../components/ViewOn';
@@ -48,14 +39,10 @@ export const ArtView = () => {
   //   return prev;
   // }, new Map<string, TokenAccount>());
 
-<<<<<<< HEAD
-  const description = data?.description;
   const attributes = data?.attributes;
-=======
   var descriptionData = data?.description;
   var description = descriptionData ? descriptionData.split('~')[0] : '';
   const locationDescription = descriptionData ? descriptionData.split('~').length > 1  ? descriptionData.split('~')[1] : "" : "";
->>>>>>> Map Changes and Abosolute URL Issue Fixes and Whitelisting the website
 
   const pubkey = wallet.publicKey?.toBase58() || '';
 
